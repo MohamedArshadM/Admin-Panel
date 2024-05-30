@@ -164,6 +164,8 @@ const ProductManagement = () => {
   const handleStatusMenuOpen = (event) => {
     setStatusMenuAnchor(event.currentTarget);
   };
+
+
   const handleAddImage = () => {
     if (formik.values.productImage.length < 5) {
       formik.setValues((prevValues) => ({
@@ -180,10 +182,7 @@ const ProductManagement = () => {
 
     if (imagesToUpload.length > 0) {
       const formData = new FormData();
-      imagesToUpload.forEach((productImage, index) => {
-        formData.append(`productImage[${index}]`, productImage);
-        formData.append('product_id', productId);
-        // Append type only if the image is selected
+      imagesToUpload.forEach((productImage, index) => {formData.append(`productImage[${index}]`, productImage);formData.append('product_id', productId);
 
       });
 
@@ -191,8 +190,7 @@ const ProductManagement = () => {
         .then(response => {
           showMessage('Images Uploaded successfully');
           setOpenAddImageDialog(false);
-          // After uploading images, you can either fetch the product details again or simply close the dialog
-          fetchProducts(); // Fetch products again to update the list
+          fetchProducts(); 
         })
         .catch(error => {
           console.error('Error uploading images:', error);
@@ -219,10 +217,16 @@ const ProductManagement = () => {
       formik.setFieldValue(`productImage[${index}]`, file);
     }
   };
+
+
   const handleImageChange = (imageUrl, index) => {
+
     console.log(imageUrl)
+
     console.log(index)
+
   };
+
 
   const associateImagesWithProduct = (productId) => {
     setProductId(productId);
@@ -244,6 +248,8 @@ const ProductManagement = () => {
         });
     }
   };
+
+
   const handleImageSelection = (index) => {
     const updatedImages = formik.values.productImage.map((image, i) => ({
       ...image,
@@ -254,6 +260,7 @@ const ProductManagement = () => {
       productImage: updatedImages,
     }));
   };
+
 
   const handleCategorySearch = (inputValue) => {
     axios.get(`https://spinryte.in/draw/api/Category/categoryList?name=${inputValue}`)
@@ -268,16 +275,23 @@ const ProductManagement = () => {
         console.error('Error fetching categories:', error);
       });
   };
+
+
   const handleCategorySelect = (selectedCategoryId, selectedCategoryName) => {
     setSelectedCategory(selectedCategoryId);
     setSelectedCategoryName(selectedCategoryName);
+
     formik.setFieldValue('category_id', selectedCategoryId);
   };
+
+
   const handleStatusMenuClose = (status) => {
     setStatusMenuAnchor(null);
     const mappedStatus = status === 'Active' ? { stringValue: 'Active', numericValue: 1 } : { stringValue: 'Inactive', numericValue: 2 };
     formik.setFieldValue('status', mappedStatus);
   };
+
+
   const handleEditClick = async (productId) => {
     try {
       const response = await axios.get(`https://spinryte.in/draw/api/Product/single_view/${productId}`);
@@ -320,6 +334,7 @@ const ProductManagement = () => {
   };
 
   const removeImage = async (productImage, id, index) => {
+    
     try {
       const response = await axios.post('https://spinryte.in/draw/api/Product/remove_image', {
         id: id,
@@ -327,7 +342,7 @@ const ProductManagement = () => {
 
       if (response) {
         showMessage('Image removed successfully');
-        // If successful, update the formik values to reflect the removal
+        
         const newProductImages = productImage.filter(image => image.id !== id);
         formik.setFieldValue('productImage', newProductImages);
       } else {
@@ -535,7 +550,7 @@ const ProductManagement = () => {
         >
           <DialogTitle>Add Images</DialogTitle>
           <DialogContent>
-            <form action="/product_images" method="POST" enctype="multipart/form-data">
+            <form action="/product_images" method="POST" encType="multipart/form-data">
               {formik.values.productImage.map((image, index) => (
                 <div key={index}>
                   <input

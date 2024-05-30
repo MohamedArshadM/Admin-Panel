@@ -28,10 +28,7 @@ const CategoryManagement = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [message, setMessage] = useState('');
-  const [formValues, setFormValues] = useState({
-    name: '',
-    status: 'Active',
-  });
+  const [formValues, setFormValues] = useState({name: '',status: 'Active',});
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -53,6 +50,10 @@ const CategoryManagement = () => {
     }
   };
 
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
   const formik = useFormik({
     initialValues: formValues, // Set initialValues to formValues
     onSubmit: (values) => {
@@ -68,7 +69,7 @@ const CategoryManagement = () => {
   const handleEditClick = (id) => {
     const itemToEdit = rows.find((row) => row.id === id);
     if (itemToEdit) {
-      formik.setValues({ // Update formik values with id included
+      formik.setValues({
         id: itemToEdit.id,
         name: itemToEdit.name,
         status: itemToEdit.status
@@ -79,18 +80,17 @@ const CategoryManagement = () => {
       console.error(`Item with id ${id} not found.`);
     }
   };
-  
-  
+
   const handleAddItem = async (values) => {
     try {
-      // Map status values to 1 for "Active" and 2 for "Inactive"
+     
       const requestData = {
         ...values,
         status: values.status === 'Active' ? 1 : 2
       };
-      // Post the new item to the server
+    
       await axios.post('https://spinryte.in/draw/api/Category/create_category', requestData);
-      fetchProducts(); // Fetch updated product list
+      fetchProducts();
       showMessage('Item Added successfully');
     } catch (error) {
       console.error('Error adding item:', error.message);
@@ -100,7 +100,7 @@ const CategoryManagement = () => {
     formik.resetForm();
     setEditingItemId(null);
   };
-  
+
   const handleEditItem = async (values) => {
     try {
       // Map status values to 1 for "Active" and 2 for "Inactive"
@@ -120,21 +120,23 @@ const CategoryManagement = () => {
     formik.resetForm();
     setEditingItemId(null);
   };
-  
+
   const handleDeleteClick = (id) => {
     setOpenDeleteDialog(true);
     setEditingItemId(id);
   };
-  
+
   const handleDeleteConfirm = async () => {
     if (editingItemId) {
       try {
-        const response = await axios.post(`https://spinryte.in/draw/api/Category/category_delete`, { id: editingItemId });
-        
+        const response = await axios.post(`https://spinryte.in/draw/api/Category/category_delete`, {
+          id: editingItemId,
+        });
+
         if (response) {
           setRows((prevRows) => prevRows.filter((row) => row.id !== editingItemId));
           setEditingItemId(null);
-          setOpenDeleteDialog(false); 
+          setOpenDeleteDialog(false);
           showMessage('Item deleted successfully');
         } else {
           showMessage('Failed to delete item');
@@ -164,22 +166,21 @@ const CategoryManagement = () => {
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
+
   const handleSearchChange = (event) => {
     const { value } = event.target;
     setSearchQuery(value);
-  
-    // Fetch products based on the search query
-    axios.get(`https://spinryte.in/draw/api/Category/categoryList?name=${value}`)
-      .then(response => {
+
+    axios.get(`https://spinryte.in/draw/api/Category/categoryList?name=${value}`).then((response) => {
         if (response.data && response.data.status && response.data.dataList) {
           // Filter the rows based on the search query
-          const filteredRows = response.data.dataList.filter(row => row.name.toLowerCase().includes(value.toLowerCase()));
+          const filteredRows = response.data.dataList.filter((row) => row.name.toLowerCase().includes(value.toLowerCase()));
           setRows(filteredRows);
         } else {
           console.error('Error fetching products: Invalid response format');
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error fetching products:', error);
       });
   };
@@ -189,7 +190,7 @@ const CategoryManagement = () => {
     <div>
       <TableContainer component={Paper}>
         <Button
-           variant="contained"
+          variant="contained"
           color="primary"
           style={{ float: 'right', margin: '10px' }}
           onClick={() => setOpenDialog(true)}
@@ -197,11 +198,11 @@ const CategoryManagement = () => {
           Add Items
         </Button>
         <TextField
-        label="Search by Name"
-        value={searchQuery}
-        onChange={handleSearchChange}
-        style={{ marginBottom: '20px' }}
-      />
+          label="Search by Name"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          style={{ marginBottom: '20px' }}
+        />
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>

@@ -28,12 +28,7 @@ const LinksManagement = () => {
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [message, setMessage] = useState('');
-    const [formValues, setFormValues] = useState({
-        heading: '',
-        link: '',
-        page: '',
-        status: 'Active',
-    });
+    const [formValues, setFormValues] = useState({heading: '',link: '',page: '',status: 'Active',});
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
