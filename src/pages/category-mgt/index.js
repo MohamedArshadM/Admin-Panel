@@ -194,7 +194,7 @@ const CategoryManagement = () => {
           style={{ float: 'right', margin: '10px' }}
           onClick={() => setOpenDialog(true)}
         >
-          Add Item
+          Add Items
         </Button>
         <TextField
         label="Search by Name"
